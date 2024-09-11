@@ -19,31 +19,31 @@ reps = 0
 # ---------------------------- TIMER MECHANISM ----------------------------------- #
 def start_timer():
     global reps
+
+    # calculate time in seconds
     work_sec = WORK_MIN * 60
     short_break_sec = SHORT_BREAK_MIN * 60
     long_break_sec = LONG_BREAK_MIN * 60
 
-    if reps % 2 == 0:
-        print(reps)
+    # determine the timer type, based on reps
+    print(reps)
+
+    if reps == 8:
+        quit()
+    elif reps % 2 == 0:
         count_down(work_sec)
-        reps += 1
-
     elif reps % 7 == 0:
-        print(reps)
         count_down(long_break_sec)
-        reps += 1
-
-    elif reps % 2 != 0:
-        print(reps)
+    else:
         count_down(short_break_sec)
-        reps += 1
+    reps += 1
 
 
 # ---------------------------- COUNTDOWN MECHANISM ------------------------------- #
 def count_down(count):
     minutes = math.floor(count / 60)
     seconds = count % 60
-    if len(str(seconds)) == 1:
+    if seconds < 10:
         seconds = '0' + str(seconds)
     time_left = f"{minutes}:{seconds}"
     # canvas updaite is writen like this:
@@ -51,6 +51,8 @@ def count_down(count):
     if count > 0:
         # print(time_left)
         window.after(1000, count_down, count - 1)
+    else:
+        start_timer()
 
 
 # ---------------------------- UI SETUP ------------------------------------------ #
