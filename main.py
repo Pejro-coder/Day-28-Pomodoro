@@ -59,7 +59,7 @@ def count_down(count):
     canvas.itemconfig(timer_text, text=time_left)
     if count > 0:
         global timer
-        timer = window.after(1000, count_down, count - 1)  # WINDOW REFRESH SETTING <-------------------------------------
+        timer = window.after(1000, count_down, count - 1)  # WINDOW REFRESH SETTING <----------------------------------
     else:
         start_timer()
         check_marks = "".join("✔" for item in range(0, reps) if item > 0 and item % 2 != 0)
