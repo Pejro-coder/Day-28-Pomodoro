@@ -20,6 +20,8 @@ def reset_timer():
     canvas.itemconfig(timer_text, text="00:00")
     title.config(text="Pomodoro timer")
     checkmarks.config(text="")
+    global reps
+    reps = 0
 
 
 # ---------------------------- TIMER MECHANISM ----------------------------------- #
