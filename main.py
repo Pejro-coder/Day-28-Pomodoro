@@ -9,7 +9,7 @@ YELLOW = "#f7f5dd"
 FONT_NAME = "Courier"
 WORK_MIN = 25
 SHORT_BREAK_MIN = 5
-LONG_BREAK_MIN = 20
+LONG_BREAK_MIN = 30
 reps = 0
 timer = None
 
@@ -34,19 +34,18 @@ def start_timer():
     long_break_sec = LONG_BREAK_MIN * 60
 
     # determine the timer type, based on reps
-    if reps == 8:
-        quit()
-    elif reps % 2 == 0:
-        count_down(work_sec)
-        title.config(text="Work", fg=GREEN)
-    elif reps % 7 == 0:
+    # if reps == 8:
+    #     quit()
+    reps += 1
+    if reps % 8 == 0:
         count_down(long_break_sec)
         title.config(text="Long break", fg=RED)
+    elif reps % 2 != 0:
+        count_down(work_sec)
+        title.config(text="Work", fg=GREEN)
     else:
         count_down(short_break_sec)
         title.config(text="Break", fg=PINK)
-    print(reps)
-    reps += 1
 
 
 # ---------------------------- COUNTDOWN MECHANISM ------------------------------- #
@@ -60,24 +59,11 @@ def count_down(count):
     canvas.itemconfig(timer_text, text=time_left)
     if count > 0:
         global timer
-        timer = window.after(1000, count_down, count - 1) # WINDOW REFRESH SETTING <---------------------------
+        timer = window.after(1000, count_down, count - 1)  # WINDOW REFRESH SETTING <-------------------------------------
     else:
         start_timer()
-# adding checkmarks for each 25 min session complete
-        # check_marks = ""
-        # for item in range(0, reps):
-        #     if item > 0 and item % 2 != 0:
-        #         check_marks += "✔"
-        #         checkmarks.config(text=check_marks)
-        #
         check_marks = "".join("✔" for item in range(0, reps) if item > 0 and item % 2 != 0)
         checkmarks.config(text=check_marks)
-
-        # marks = ""
-        # work_sessions = math.floor(reps / 2)
-        # for _ in range(work_sessions):
-        #     marks += "✔"
-        # checkmarks.config(text=marks)
 
 
 # ---------------------------- UI SETUP ------------------------------------------ #
