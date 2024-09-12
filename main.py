@@ -7,14 +7,20 @@ RED = "#e7305b"
 GREEN = "#9bdeac"
 YELLOW = "#f7f5dd"
 FONT_NAME = "Courier"
-CHECK_MARK = "✔"
 WORK_MIN = 25
 SHORT_BREAK_MIN = 5
 LONG_BREAK_MIN = 20
 reps = 0
+timer = None
 
 
 # ---------------------------- TIMER RESET --------------------------------------- #
+def reset_timer():
+    window.after_cancel(timer)
+    canvas.itemconfig(timer_text, text="00:00")
+    title.config(text="Pomodoro timer")
+    checkmarks.config(text="")
+
 
 # ---------------------------- TIMER MECHANISM ----------------------------------- #
 def start_timer():
@@ -26,16 +32,18 @@ def start_timer():
     long_break_sec = LONG_BREAK_MIN * 60
 
     # determine the timer type, based on reps
-    print(reps)
-
     if reps == 8:
         quit()
     elif reps % 2 == 0:
         count_down(work_sec)
+        title.config(text="Work", fg=GREEN)
     elif reps % 7 == 0:
         count_down(long_break_sec)
+        title.config(text="Long break", fg=RED)
     else:
         count_down(short_break_sec)
+        title.config(text="Break", fg=PINK)
+    print(reps)
     reps += 1
 
 
@@ -49,10 +57,25 @@ def count_down(count):
     # canvas updaite is writen like this:
     canvas.itemconfig(timer_text, text=time_left)
     if count > 0:
-        # print(time_left)
-        window.after(1000, count_down, count - 1)
+        global timer
+        timer = window.after(1000, count_down, count - 1) # WINDOW REFRESH SETTING <---------------------------
     else:
         start_timer()
+# adding checkmarks for each 25 min session complete
+        # check_marks = ""
+        # for item in range(0, reps):
+        #     if item > 0 and item % 2 != 0:
+        #         check_marks += "✔"
+        #         checkmarks.config(text=check_marks)
+        #
+        check_marks = "".join("✔" for item in range(0, reps) if item > 0 and item % 2 != 0)
+        checkmarks.config(text=check_marks)
+
+        # marks = ""
+        # work_sessions = math.floor(reps / 2)
+        # for _ in range(work_sessions):
+        #     marks += "✔"
+        # checkmarks.config(text=marks)
 
 
 # ---------------------------- UI SETUP ------------------------------------------ #
@@ -61,24 +84,24 @@ window.title("Pomodoro")
 window.config(padx=60, pady=30, bg=YELLOW)
 
 # Picture
-canvas = Canvas(width=200, height=224, bg=YELLOW, highlightthickness=0)
+canvas = Canvas(width=260, height=224, bg=YELLOW, highlightthickness=0)
 tomato = PhotoImage(file="tomato.png")
-canvas.create_image(100, 111, image=tomato)
-timer_text = canvas.create_text(103, 140, text="00:00", font=("Arial", 24, "bold"), fill="white")
+canvas.create_image(130, 111, image=tomato)
+timer_text = canvas.create_text(130, 140, text="00:00", font=("Arial", 24, "bold"), fill="white")
 canvas.grid(column=1, row=1)
 
 # Labels
 title = Label(text="Pomodoro timer", font=("Arial", 24, "bold"), bg=YELLOW, fg=GREEN)
 title.grid(column=1, row=0)
 
-checkmarks = Label(text=CHECK_MARK, font=("Arial", 24, "bold"), bg=YELLOW, fg=GREEN)
+checkmarks = Label(font=("Arial", 24, "bold"), bg=YELLOW, fg=GREEN)
 checkmarks.grid(column=1, row=3)
 
 # Buttons
 start = Button(text="Start", command=start_timer)
 start.grid(column=0, row=2)
 
-reset = Button(text="Reset", bg="white")
+reset = Button(text="Reset", bg="white", command=reset_timer)
 reset.grid(column=2, row=2)
 
 window.mainloop()
